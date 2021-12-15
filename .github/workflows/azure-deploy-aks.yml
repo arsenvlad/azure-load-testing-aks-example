@@ -23,12 +23,12 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Delete RG and deploy AKS
         run: |
-          if [ $(az group exists --name ${RG}) = true ]; then
-              az group delete --resource-group ${RG} --yes
-          fi
-          az group create --resource-group ${RG} --location ${LOCATION}
-          az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --location ${LOCATION} --generate-ssh-keys
-          az aks get-credentials --resource-group ${RG} --name ${$AKS_NAME}
+          #if [ $(az group exists --name ${RG}) = true ]; then
+          #    az group delete --resource-group ${RG} --yes
+          #fi
+          #az group create --resource-group ${RG} --location ${LOCATION}
+          #az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --location ${LOCATION} --generate-ssh-keys
+          az aks get-credentials --resource-group ${RG} --name ${AKS_NAME}
       - name: Deploy NGINX Ingress Controller
         run: |
           kubectl create namespace ingress-basic
