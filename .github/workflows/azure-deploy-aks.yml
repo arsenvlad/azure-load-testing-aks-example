@@ -1,7 +1,7 @@
 name: azure-deploy-aks
 on:
   workflow_dispatch:
-    input:
+    inputs:
       vm_size:
         description: 'VM Size'
         required: true
@@ -23,7 +23,12 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Delete RG and deploy AKS
         run: |
-          az group delete --resource-group ${RG} --yes
+          echo VM_SIZE=${VM_SIZE}
+
+          $rgExists = az group exits -n ${RG}
+          if ($rgExists -eq 'true') {}
+            az group delete --resource-group ${RG} --yes
+          }
           az group create --resource-group ${RG} --location ${LOCATION}
           az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --location ${LOCATION}
           az aks get-credentials --resource-group ${RG} --name {$AKS_NAME}
