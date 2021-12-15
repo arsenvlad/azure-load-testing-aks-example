@@ -10,9 +10,9 @@ jobs:
   deploy-aks:
     runs-on: ubuntu-latest
     env:
-      RG: "rg-loadtest-aks"
+      RG: "rg-loadtestaks"
       LOCATION: "eastus"
-      AKS_NAME: "loadtest-aks"
+      AKS_NAME: "ltaks"
       VM_SIZE: "${{ github.event.inputs.vm_size }}"
     steps:
       - name: Checkout
@@ -28,7 +28,7 @@ jobs:
           fi
           az group create --resource-group ${RG} --location ${LOCATION}
           az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --location ${LOCATION} --generate-ssh-keys
-          az aks get-credentials --resource-group ${RG} --name {$AKS_NAME}
+          az aks get-credentials --resource-group ${RG} --name ${$AKS_NAME}
       - name: Deploy NGINX Ingress Controller
         run: |
           kubectl create namespace ingress-basic
