@@ -1,0 +1,49 @@
+name: azure-deploy-aks
+on:
+    schedule:
+      - cron: '5 18 * * 3' # Every week on Wednesday at 18:05
+jobs:
+  deploy-aks:
+    runs-on: ubuntu-latest
+    env:
+      RG: "rg-loadtest-aks"
+      LOCATION: "eastus"
+      AKS_NAME: "loadtest-aks"
+      VM_SIZE: "Standard_D16s_v2"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Delete RG and deploy AKS
+        run: |
+          az group delete --resource-group ${RG} --yes
+          az group create --resource-group ${RG} --location ${LOCATION}
+          az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --location ${LOCATION}
+          az aks get-credentials --resource-group ${RG} --name {$AKS_NAME}
+      - name: Deploy NGINX Ingress Controller
+        run: |
+          kubectl create namespace ingress-basic
+          
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+
+          helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-basic --set controller.replicaCount=2 --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux
+
+          kubectl get service nginx-ingress-ingress-nginx-controller --namespace ingress-basic
+      - name: Deploy App
+        run: |
+          kubectl apply -f app/netty_hello.yml
+
+          sleep 30
+          
+          kubectl get service --all-namespaces
+
+          kubectl get pods --all-namespaces
+      - name: Azure Logout
+        run: |
+          az logout
+          az cache purge
+          az account clear
