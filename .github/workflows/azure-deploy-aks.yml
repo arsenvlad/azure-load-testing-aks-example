@@ -1,7 +1,11 @@
 name: azure-deploy-aks
 on:
-    schedule:
-      - cron: '5 18 * * 3' # Every week on Wednesday at 18:05
+  workflow_dispatch:
+    input:
+      vm_size:
+        description: 'VM Size'
+        required: true
+        default: 'Standard_D16s_v2'
 jobs:
   deploy-aks:
     runs-on: ubuntu-latest
@@ -9,7 +13,7 @@ jobs:
       RG: "rg-loadtest-aks"
       LOCATION: "eastus"
       AKS_NAME: "loadtest-aks"
-      VM_SIZE: "Standard_D16s_v2"
+      VM_SIZE: "${{ github.event.inputs.vm_size }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
