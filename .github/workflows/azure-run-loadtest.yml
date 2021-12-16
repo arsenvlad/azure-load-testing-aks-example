@@ -1,5 +1,7 @@
 name: azure-run-loadtest
 on:
+  schedule:
+    - cron: '*/2 * * *' # Every hour on 3 minute (minute hour month_day month week_day)
   workflow_dispatch:
     inputs:
       resource_group:
@@ -26,11 +28,11 @@ jobs:
   run-loadtest:
     runs-on: ubuntu-latest
     env:
-      RG: "${{ github.event.inputs.resource_group }}"
-      NAME: "${{ github.event.inputs.name }}"
-      HOST: "${{ github.event.inputs.host }}"
-      DURATION: "${{ github.event.inputs.duration }}"
-      NUMBER_OF_USERS: "${{ github.event.inputs.number_of_users }}"
+      RG: "${{ github.event.inputs.resource_group || 'rg-loadtest01' }}"
+      NAME: "${{ github.event.inputs.name || 'loadtest01' }}"
+      HOST: "${{ github.event.inputs.host || 'avloadtestaks.eastus.cloudapp.azure.com' }}"
+      NUMBER_OF_USERS: "${{ github.event.inputs.number_of_users || '1' }}"
+      DURATION: "${{ github.event.inputs.duration || '120' }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
