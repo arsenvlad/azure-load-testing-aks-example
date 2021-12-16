@@ -39,11 +39,21 @@ jobs:
           helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-basic --set controller.replicaCount=2 --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux --set controller.admissionWebhooks.patch.nodeSelector."beta\.kubernetes\.io/os"=linux
 
           kubectl get service nginx-ingress-ingress-nginx-controller --namespace ingress-basic
+
+          sleep 30
+
+          ip=""
+          while [ -z $ip ]; do
+            echo "Waiting for service IP"
+            ip=$(kubectl get svc nginx-ingress-ingress-nginx-controller --namespace ingress-basic --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
+            [ -z "$ip" ] && sleep 10
+          done
+          echo 'Found service IP: '$ip
       - name: Deploy App
         run: |
           kubectl apply -f app/netty_hello.yml
 
-          sleep 30
+          kubectl wait --for=condition=ready pod --timeout=120s -l app=netty-backend
           
           kubectl get service --all-namespaces
 
