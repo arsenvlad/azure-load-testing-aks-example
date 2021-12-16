@@ -17,7 +17,7 @@ on:
       aks_name:
         description: 'AKS Name'
         required: true
-        default: 'loadtestaks'
+        default: 'loadtest'
       dns_label:
         description: 'DNS Label'
         required: true
@@ -41,12 +41,14 @@ jobs:
       - name: Delete existing resource group
         run: |
           if [ $(az group exists --name ${RG}) = true ]; then
-                az group delete --resource-group ${RG} --yes
+            az group delete --resource-group ${RG} --yes
           fi
       - name: Deploy AKS
         run: |
           az group create --resource-group ${RG} --location ${LOCATION}
-          az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --location ${LOCATION} --enable-addons monitoring --generate-ssh-keys
+          az monitor log-analytics workspace create --resource-group ${RG} --location ${LOCATION} --workspace-name ${AKS_NAME}
+          workspace_id=$(az monitor log-analytics workspace show --resource-group test-rg --workspace-name test1 --query id -o tsv)
+          az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --location ${LOCATION} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --enable-addons monitoring --generate-ssh-keys --workspace-resource-id ${workspace_id}
           az aks get-credentials --resource-group ${RG} --name ${AKS_NAME}
       - name: Deploy NGINX Ingress Controller
         run: |
