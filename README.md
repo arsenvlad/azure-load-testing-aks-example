@@ -12,4 +12,8 @@ Run [azure-deploy-aks](../../actions/workflows/azure-deploy-aks.yml) workflow
 
 Run [azure-deploy-loadtestservice](../../actions/workflows/azure-deploy-loadtestservice.yml) workflow
 
+> The service principal used by the GitHub Action must have Owner role to be able to assign "Load Test Owner" role to itself.
 
+## Run Load Test
+
+Run [azure-run-loadtest](../../actions/workflows/azure-run-loadtest) workflow

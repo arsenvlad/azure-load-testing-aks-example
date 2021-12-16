@@ -1,0 +1,80 @@
+name: azure-run-loadtest
+on:
+  workflow_dispatch:
+    resource_group:
+      description: 'Load Test Resource Group'
+      required: true
+      default: 'rg-loadtest01'
+    name:
+      description: 'Load Test Resource Name'
+      required: true
+      default: 'loadtest01'
+    host:
+      description: 'Host'
+      required: true
+      default: 'avloadtestaks.eastus.cloudapp.azure.com'
+jobs:
+  run-loadtest:
+    runs-on: ubuntu-latest
+    env:
+      RG: "${{ github.event.inputs.resource_group }}"
+      NAME: "${{ github.event.inputs.name }}"
+      HOST: "${{ github.event.inputs.host }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Run netty_hello_test
+        uses: azure/load-testing@v1
+        with:
+          loadTestConfigFile: 'loadtestservice/netty_hello_test.yml'
+          resourceGroup: ${RG}
+          loadTestResource: ${NAME}
+          env: |
+            [
+              {
+                "name": "number_of_users",
+                "value": "1"
+              },
+              {
+                "name": "ramp_period_seconds",
+                "value": "10"
+              },
+              {
+                "name": "duration_seconds",
+                "value": "120"
+              },
+              {
+                "name": "protocol",
+                "value": "http"
+              },
+              {
+                "name": "host",
+                "value": "${HOST}"
+              },
+              {
+                "name": "port",
+                "value": "80"
+              },
+              {
+                "name": "path",
+                "value": "/"
+              }
+            ]
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: loadTestResults
+          path: ${{ github.workspace }}/loadTest
+
+      - name: Azure Logout
+        run: |
+          az logout
+          az cache purge
+          az account clear
