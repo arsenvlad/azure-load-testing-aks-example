@@ -30,8 +30,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Deploy LoadTestService
         run: |
-          principal_id_=$(az ad signed-in-user show --query objectId -o tsv)
-          principal_type=$(az ad signed-in-user show --query objectType -o tsv)
+          principal_id=b3b566fa-0c85-4b2a-ab84-6b20430588e8
+          principal_type=ServicePrincipal
 
           az group create --resource-group ${RG} --location ${LOCATION}
           az deployment group create --resource-group ${RG} --template-file loadtestservice/deploy-loadtestservice.bicep --parameter name=${NAME} --parameter principalId=${principal_id} principalType=${principal_type}
