@@ -1,0 +1,45 @@
+name: azure-deploy-loadtestservice
+on:
+  workflow_dispatch:
+    inputs:
+      location:
+        description: 'Location'
+        required: true
+        default: 'eastus'
+      resource_group:
+        description: 'Resource Group'
+        required: true
+        default: 'rg-loadtest01'
+      name:
+        description: 'Load Test Service Name'
+        required: true
+        default: 'loadtest01'
+jobs:
+  deploy-aks:
+    runs-on: ubuntu-latest
+    env:
+      RG: "${{ github.event.inputs.resource_group }}"
+      LOCATION: "${{ github.event.inputs.location }}"
+      NAME: "${{ github.event.inputs.name }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deploy LoadTestService
+        run: |
+          principal_id_=$(az ad signed-in-user show --query objectId -o tsv)
+          principal_type=$(az ad signed-in-user show --query objectType -o tsv)
+
+          az group create --resource-group ${RG} --location ${LOCATION}
+          az deployment group create --resource-group ${RG} --template-file loadtestservice/deploy-loadtestservice.bicep --parameter name=${NAME} --parameter principalId=${principal_id} principalType=${principal_type}
+      - name: Show LoadTestService properties
+        run: |
+          az resource show --resource-group ${RG} --namespace Microsoft.LoadTestService --resource-type loadTests --name ${NAME} -o json
+      - name: Azure Logout
+        run: |
+          az logout
+          az cache purge
+          az account clear
