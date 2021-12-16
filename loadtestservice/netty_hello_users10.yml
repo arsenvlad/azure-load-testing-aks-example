@@ -1,0 +1,5 @@
+version: v0.1
+testName: netty_hello_users10
+testPlan: netty_hello.jmx
+description: 'netty_hello users10'
+engineInstances: 1

@@ -42,10 +42,10 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Run netty_hello_test
+      - name: Run netty_hello_users1
         uses: azure/load-testing@v1
         with:
-          loadTestConfigFile: 'loadtestservice/netty_hello_test.yml'
+          loadTestConfigFile: 'loadtestservice/netty_hello_users1.yml'
           resourceGroup: ${{ env.RG }}
           loadTestResource: ${{ env.NAME }}
           env: |
@@ -80,11 +80,55 @@ jobs:
               }
             ]
 
-      - name: Upload Test Results
+      - name: Upload netty_hello_users1 results
         uses: actions/upload-artifact@v2
         with:
-          name: loadTestResults
-          path: ${{ github.workspace }}/loadTest
+          name: loadTestResults_netty_hello_users1
+          path: ${{ github.workspace }}/loadTest_netty_hello_users1
+
+      - name: Run netty_hello_users10
+        uses: azure/load-testing@v1
+        with:
+          loadTestConfigFile: 'loadtestservice/netty_hello_users10.yml'
+          resourceGroup: ${{ env.RG }}
+          loadTestResource: ${{ env.NAME }}
+          env: |
+            [
+              {
+                "name": "number_of_users",
+                "value": "10"
+              },
+              {
+                "name": "ramp_period_seconds",
+                "value": "10"
+              },
+              {
+                "name": "duration_seconds",
+                "value": "${{ env.DURATION }}"
+              },
+              {
+                "name": "protocol",
+                "value": "http"
+              },
+              {
+                "name": "host",
+                "value": "${{ env.HOST }}"
+              },
+              {
+                "name": "port",
+                "value": "80"
+              },
+              {
+                "name": "path",
+                "value": "/"
+              }
+            ]
+
+      - name: Upload netty_hello_users10 results
+        uses: actions/upload-artifact@v2
+        with:
+          name: loadTestResults_netty_hello_users10
+          path: ${{ github.workspace }}/loadTest_netty_hello_users10
 
       - name: Azure Logout
         run: |
