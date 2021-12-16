@@ -1,7 +1,7 @@
 name: azure-run-loadtest
 on:
   schedule:
-    - cron: '*/5 * * * *' # Every hour on 3 minute (minute hour month_day month week_day)
+    - cron: '*/15 * * * *' # Every 15 minutes (minute hour month_day month week_day)
   workflow_dispatch:
     inputs:
       resource_group:

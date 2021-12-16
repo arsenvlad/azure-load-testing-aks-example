@@ -14,6 +14,8 @@ Run [azure-deploy-loadtestservice](../../actions/workflows/azure-deploy-loadtest
 
 > The service principal used by the GitHub Action must have Owner role to be able to assign "Load Test Owner" role to itself.
 
-## Run Load Test
+## Load Test
 
-Run [azure-run-loadtest](../../actions/workflows/azure-run-loadtest.yml) workflow
+The GitHub Actions workflow [azure-run-loadtest](../../actions/workflows/azure-run-loadtest.yml) runs the netty_hello_test on schedule every 15 minutes. The workflow can also be invoked manually.
+
+
