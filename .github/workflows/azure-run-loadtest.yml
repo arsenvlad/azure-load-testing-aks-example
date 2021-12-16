@@ -1,18 +1,19 @@
 name: azure-run-loadtest
 on:
   workflow_dispatch:
-    resource_group:
-      description: 'Load Test Resource Group'
-      required: true
-      default: 'rg-loadtest01'
-    name:
-      description: 'Load Test Resource Name'
-      required: true
-      default: 'loadtest01'
-    host:
-      description: 'Host'
-      required: true
-      default: 'avloadtestaks.eastus.cloudapp.azure.com'
+    inputs:
+      resource_group:
+        description: 'Load Test Resource Group'
+        required: true
+        default: 'rg-loadtest01'
+      name:
+        description: 'Load Test Resource Name'
+        required: true
+        default: 'loadtest01'
+      host:
+        description: 'Host'
+        required: true
+        default: 'avloadtestaks.eastus.cloudapp.azure.com'
 jobs:
   run-loadtest:
     runs-on: ubuntu-latest

@@ -16,4 +16,4 @@ Run [azure-deploy-loadtestservice](../../actions/workflows/azure-deploy-loadtest
 
 ## Run Load Test
 
-Run [azure-run-loadtest](../../actions/workflows/azure-run-loadtest) workflow
+Run [azure-run-loadtest](../../actions/workflows/azure-run-loadtest.yml) workflow
