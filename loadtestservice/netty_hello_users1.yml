@@ -3,3 +3,6 @@ testName: netty_hello_users1
 testPlan: netty_hello.jmx
 description: 'netty_hello users1'
 engineInstances: 1
+failureCriteria:
+  - avg(response_time_ms) > 100
+  - percentage(error) > 1
