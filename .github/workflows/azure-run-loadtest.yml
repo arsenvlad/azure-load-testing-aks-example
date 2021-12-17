@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: loadTestResults_netty_hello_users1
-          path: ${{ github.workspace }}/loadTest_netty_hello_users1
+          path: ${{ github.workspace }}/loadTest
 
       - name: Run netty_hello_users10
         uses: azure/load-testing@v1
@@ -128,7 +128,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: loadTestResults_netty_hello_users10
-          path: ${{ github.workspace }}/loadTest_netty_hello_users10
+          path: ${{ github.workspace }}/loadTest
 
       - name: Azure Logout
         run: |
