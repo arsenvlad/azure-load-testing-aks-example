@@ -1,6 +1,6 @@
 # Azure Load Testing - AKS Example
 
-Simple example of using Azure Load Testing against a simple web app running in AKS.
+Simple example of using [Azure Load Testing (preview)](https://docs.microsoft.com/en-us/azure/load-testing/overview-what-is-azure-load-testing) against a simple web app running in AKS.
 
 ## Deploy AKS cluster and app using GitHub Action
 
