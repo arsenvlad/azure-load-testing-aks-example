@@ -16,6 +16,4 @@ Run [azure-deploy-loadtestservice](../../actions/workflows/azure-deploy-loadtest
 
 ## Load Test
 
-The GitHub Actions workflow [azure-run-loadtest](../../actions/workflows/azure-run-loadtest.yml) runs the netty_hello_test on schedule every 15 minutes. The workflow can also be invoked manually.
-
-
+The GitHub Actions workflow [azure-run-loadtest](../../actions/workflows/azure-run-loadtest.yml) runs the netty_hello_test on schedule every X minutes. The workflow can also be invoked manually.
