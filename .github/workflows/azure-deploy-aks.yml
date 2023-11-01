@@ -48,7 +48,7 @@ jobs:
           az group create --resource-group ${RG} --location ${LOCATION}
           az monitor log-analytics workspace create --resource-group ${RG} --location ${LOCATION} --workspace-name ${AKS_NAME}
           workspace_id=$(az monitor log-analytics workspace show --resource-group ${RG} --workspace-name ${AKS_NAME} --query id -o tsv)
-          az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --location ${LOCATION} --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --enable-addons monitoring --generate-ssh-keys --workspace-resource-id ${workspace_id}
+          az aks create --resource-group ${RG} --name ${AKS_NAME} --node-vm-size ${VM_SIZE} --location ${LOCATION} --os-sku AzureLinux --node-osdisk-size 128 --node-osdisk-type Managed --node-count 1 --enable-addons monitoring --generate-ssh-keys --workspace-resource-id ${workspace_id}
           az aks get-credentials --resource-group ${RG} --name ${AKS_NAME}
       - name: Deploy NGINX Ingress Controller
         run: |
